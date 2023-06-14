@@ -34,7 +34,7 @@ def listings_data_extraction(i, listings_urls, listings_rawdata_backup, errors):
             errors[id] = status
             logging.error(" ".join(["Status code", str(status), "at url", url]))
         if i % 100 == 0:
-            with open("./data/backup/immobiliare_it_data.pkl", "wb") as checkpoint:
+            with open("./data/log/immobiliare_it_data.pkl", "wb") as checkpoint:
                 pickle.dump({"logprocess": {"i": i, "errors": errors}, "rawdata": listings_rawdata}, checkpoint)
         i += 1
     return listings_rawdata
@@ -42,7 +42,7 @@ def listings_data_extraction(i, listings_urls, listings_rawdata_backup, errors):
 def listings_data():
     logging.info("Listings data scraping...")
     try:
-        with open("./data/backup/immobiliare_it_data.pkl", "rb") as checkpoint:
+        with open("./data/log/immobiliare_it_data.pkl", "rb") as checkpoint:
             container = pickle.load(checkpoint)
     except FileNotFoundError:
         container = {"logprocess": {"i": 0, "errors": {}}, "rawdata": []}
@@ -54,7 +54,7 @@ def listings_data():
     df = pd.concat(listings_rawdata)
     df.to_csv("./data/raw/annunci.csv", index = False, sep = ";")
     logging.info("Data saved in \"raw\" folder.")
-    os.remove("./data/backup/immobiliare_it_data.pkl")
+    os.remove("./data/log/immobiliare_it_data.pkl")
     logging.info("Process backup removed successfully.")
 
 if __name__ == "__main__":
